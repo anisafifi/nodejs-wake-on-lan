@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { api, Device } from '@/lib/api';
 import DeviceCard from '@/components/DeviceCard';
 import DeviceModal from '@/components/DeviceModal';
-import { Plus, Wifi, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Plus, Wifi } from 'lucide-react';
 
 export default function Home() {
   const [devices, setDevices] = useState<Device[]>([]);
@@ -13,7 +14,6 @@ export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [editingDevice, setEditingDevice] = useState<Device | undefined>();
   const [isDuplicating, setIsDuplicating] = useState(false);
-  const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   useEffect(() => {
     loadDevices();
@@ -24,24 +24,29 @@ export default function Home() {
       const data = await api.getDevices();
       setDevices(data.devices);
     } catch (error) {
-      showNotification('error', 'Failed to load devices');
+      toast.error('Failed to load devices');
     } finally {
       setLoading(false);
     }
-  };
-
-  const showNotification = (type: 'success' | 'error', message: string) => {
-    setNotification({ type, message });
-    setTimeout(() => setNotification(null), 5000);
   };
 
   const handleWake = async (device: Device) => {
     setWakingDevices(prev => new Set(prev).add(device.name));
     try {
       const result = await api.wakeDevice(device.name);
-      showNotification(result.success ? 'success' : 'error', result.message);
+      if (result.success) {
+        toast.success(`${device.name} woken successfully`, {
+          description: result.message,
+        });
+      } else {
+        toast.error(`Failed to wake ${device.name}`, {
+          description: result.message,
+        });
+      }
     } catch (error) {
-      showNotification('error', error instanceof Error ? error.message : 'Failed to wake device');
+      toast.error(`Failed to wake ${device.name}`, {
+        description: error instanceof Error ? error.message : 'Unknown error',
+      });
     } finally {
       setWakingDevices(prev => {
         const next = new Set(prev);
@@ -54,14 +59,20 @@ export default function Home() {
   const handleWakeAll = async () => {
     if (devices.length === 0) return;
     
+    const toastId = toast.loading('Waking all devices...');
     try {
       const result = await api.wakeAll();
-      showNotification(
-        'success',
-        `Woke ${result.summary.successful}/${result.summary.total} devices`
-      );
+      toast.success(`Successfully woke ${result.summary.successful}/${result.summary.total} devices`, {
+        id: toastId,
+        description: result.summary.failed > 0 
+          ? `${result.summary.failed} device(s) failed to wake`
+          : 'All devices woken successfully',
+      });
     } catch (error) {
-      showNotification('error', error instanceof Error ? error.message : 'Failed to wake devices');
+      toast.error('Failed to wake devices', {
+        id: toastId,
+        description: error instanceof Error ? error.message : 'Unknown error',
+      });
     }
   };
 
@@ -69,17 +80,23 @@ export default function Home() {
     try {
       if (editingDevice && !isDuplicating) {
         await api.updateDevice(editingDevice.name, device);
-        showNotification('success', 'Device updated successfully');
+        toast.success('Device updated successfully', {
+          description: `${device.name} has been updated`,
+        });
       } else {
         await api.addDevice(device);
-        showNotification('success', 'Device added successfully');
+        toast.success('Device added successfully', {
+          description: `${device.name} has been added to your devices`,
+        });
       }
       setShowModal(false);
       setEditingDevice(undefined);
       setIsDuplicating(false);
       loadDevices();
     } catch (error) {
-      showNotification('error', error instanceof Error ? error.message : 'Failed to save device');
+      toast.error('Failed to save device', {
+        description: error instanceof Error ? error.message : 'Unknown error',
+      });
     }
   };
 
@@ -88,10 +105,14 @@ export default function Home() {
     
     try {
       await api.deleteDevice(device.name);
-      showNotification('success', 'Device deleted successfully');
+      toast.success('Device deleted successfully', {
+        description: `${device.name} has been removed`,
+      });
       loadDevices();
     } catch (error) {
-      showNotification('error', error instanceof Error ? error.message : 'Failed to delete device');
+      toast.error('Failed to delete device', {
+        description: error instanceof Error ? error.message : 'Unknown error',
+      });
     }
   };
 
@@ -145,25 +166,6 @@ export default function Home() {
           </div>
         </div>
       </header>
-
-      {notification && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-          <div
-            className={`flex items-center gap-3 p-4 rounded-lg ${
-              notification.type === 'success'
-                ? 'bg-green-50 dark:bg-green-900/30 text-green-800 dark:text-green-200'
-                : 'bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200'
-            }`}
-          >
-            {notification.type === 'success' ? (
-              <CheckCircle2 className="w-5 h-5" />
-            ) : (
-              <AlertCircle className="w-5 h-5" />
-            )}
-            <span>{notification.message}</span>
-          </div>
-        </div>
-      )}
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {loading ? (
