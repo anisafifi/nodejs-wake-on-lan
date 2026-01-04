@@ -12,6 +12,7 @@ export default function Home() {
   const [wakingDevices, setWakingDevices] = useState<Set<string>>(new Set());
   const [showModal, setShowModal] = useState(false);
   const [editingDevice, setEditingDevice] = useState<Device | undefined>();
+  const [isDuplicating, setIsDuplicating] = useState(false);
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   useEffect(() => {
@@ -66,7 +67,7 @@ export default function Home() {
 
   const handleSaveDevice = async (device: Device) => {
     try {
-      if (editingDevice) {
+      if (editingDevice && !isDuplicating) {
         await api.updateDevice(editingDevice.name, device);
         showNotification('success', 'Device updated successfully');
       } else {
@@ -75,6 +76,7 @@ export default function Home() {
       }
       setShowModal(false);
       setEditingDevice(undefined);
+      setIsDuplicating(false);
       loadDevices();
     } catch (error) {
       showNotification('error', error instanceof Error ? error.message : 'Failed to save device');
@@ -95,6 +97,18 @@ export default function Home() {
 
   const handleEditDevice = (device: Device) => {
     setEditingDevice(device);
+    setIsDuplicating(false);
+    setShowModal(true);
+  };
+
+  const handleDuplicateDevice = (device: Device) => {
+    // Create a copy with modified name
+    const duplicatedDevice: Device = {
+      ...device,
+      name: `${device.name} (copy)`,
+    };
+    setEditingDevice(duplicatedDevice);
+    setIsDuplicating(true);
     setShowModal(true);
   };
 
@@ -119,6 +133,7 @@ export default function Home() {
               <button
                 onClick={() => {
                   setEditingDevice(undefined);
+                  setIsDuplicating(false);
                   setShowModal(true);
                 }}
                 className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
@@ -181,6 +196,7 @@ export default function Home() {
                 device={device}
                 onWake={handleWake}
                 onEdit={handleEditDevice}
+                onDuplicate={handleDuplicateDevice}
                 onDelete={handleDeleteDevice}
                 isWaking={wakingDevices.has(device.name)}
               />
@@ -196,6 +212,7 @@ export default function Home() {
           onClose={() => {
             setShowModal(false);
             setEditingDevice(undefined);
+            setIsDuplicating(false);
           }}
         />
       )}

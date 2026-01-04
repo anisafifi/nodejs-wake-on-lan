@@ -71,6 +71,15 @@ export class DeviceManager {
     if (!device) {
       return false;
     }
+    
+    // If name is being changed, check if new name already exists
+    if (updates.name && updates.name !== name) {
+      const existing = this.getDevice(updates.name);
+      if (existing) {
+        throw new Error(`Device '${updates.name}' already exists`);
+      }
+    }
+    
     Object.assign(device, updates);
     await this.saveDevices();
     return true;

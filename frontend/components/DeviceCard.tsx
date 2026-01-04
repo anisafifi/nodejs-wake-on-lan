@@ -1,17 +1,18 @@
 'use client';
 
 import { Device } from '@/lib/api';
-import { Wifi, WifiOff, Trash2, Edit2 } from 'lucide-react';
+import { Wifi, WifiOff, Trash2, Edit2, Copy } from 'lucide-react';
 
 interface DeviceCardProps {
   device: Device;
   onWake: (device: Device) => void;
   onEdit: (device: Device) => void;
+  onDuplicate: (device: Device) => void;
   onDelete: (device: Device) => void;
   isWaking?: boolean;
 }
 
-export default function DeviceCard({ device, onWake, onEdit, onDelete, isWaking }: DeviceCardProps) {
+export default function DeviceCard({ device, onWake, onEdit, onDuplicate, onDelete, isWaking }: DeviceCardProps) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
       <div className="flex items-start justify-between mb-4">
@@ -32,6 +33,13 @@ export default function DeviceCard({ device, onWake, onEdit, onDelete, isWaking 
             title="Edit device"
           >
             <Edit2 className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => onDuplicate(device)}
+            className="p-2 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded-lg transition-colors"
+            title="Duplicate device"
+          >
+            <Copy className="w-5 h-5" />
           </button>
           <button
             onClick={() => onDelete(device)}

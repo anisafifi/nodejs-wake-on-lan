@@ -2,12 +2,17 @@ import express, { Request, Response } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import rateLimit from 'express-rate-limit';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { DeviceManager } from './device-manager.js';
 import { WakeOnLanService } from './wol-service.js';
 import { swaggerSpec } from './swagger.js';
 import { requestIdMiddleware, loggingMiddleware } from './middleware.js';
 import { logger } from './logger.js';
 import type { Device } from './types.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const deviceManager = new DeviceManager();
@@ -233,9 +238,10 @@ app.post('/api/devices', async (req: Request, res: Response) => {
  */
 app.put('/api/devices/:name', async (req: Request, res: Response) => {
   try {
-    const { mac, ip, broadcast } = req.body;
+    const { name, mac, ip, broadcast } = req.body;
     const updates: Partial<Device> = {};
 
+    if (name !== undefined) updates.name = name;
     if (mac) {
       if (!wolService.isValidMac(mac)) {
         res.status(400).json({ error: 'Invalid MAC address format' });
