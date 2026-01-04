@@ -29,21 +29,21 @@ export default function DeviceCard({ device, onWake, onEdit, onDuplicate, onDele
         <div className="flex gap-2">
           <button
             onClick={() => onEdit(device)}
-            className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
+            className="p-2 cursor-pointer text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
             title="Edit device"
           >
             <Edit2 className="w-5 h-5" />
           </button>
           <button
             onClick={() => onDuplicate(device)}
-            className="p-2 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded-lg transition-colors"
+            className="p-2 cursor-pointer text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded-lg transition-colors"
             title="Duplicate device"
           >
             <Copy className="w-5 h-5" />
           </button>
           <button
             onClick={() => onDelete(device)}
-            className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+            className="p-2 cursor-pointer text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
             title="Delete device"
           >
             <Trash2 className="w-5 h-5" />
@@ -54,7 +54,7 @@ export default function DeviceCard({ device, onWake, onEdit, onDuplicate, onDele
       <button
         onClick={() => onWake(device)}
         disabled={isWaking}
-        className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+        className="w-full flex items-center cursor-pointer justify-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-medium py-3 px-4 rounded-lg transition-colors"
       >
         {isWaking ? (
           <>

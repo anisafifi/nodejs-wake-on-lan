@@ -124,7 +124,7 @@ export default function Home() {
               {devices.length > 0 && (
                 <button
                   onClick={handleWakeAll}
-                  className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
+                  className="cursor-pointer flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
                 >
                   <Wifi className="w-5 h-5" />
                   Wake All
@@ -136,7 +136,7 @@ export default function Home() {
                   setIsDuplicating(false);
                   setShowModal(true);
                 }}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                className="cursor-pointer flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
               >
                 <Plus className="w-5 h-5" />
                 Add Device
