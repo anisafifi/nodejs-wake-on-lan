@@ -8,7 +8,7 @@ This guide explains how to build and run the Wake-on-LAN application as a Docker
 
 ```bash
 # Pull from GitHub Container Registry and start
-docker pull ghcr.io/hixbehq/nodejs-wol:latest
+docker pull ghcr.io/hixbehq/wol:latest
 docker-compose up -d
 
 # View logs

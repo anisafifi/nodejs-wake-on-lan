@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   wol-app:
-    image: ghcr.io/hixbehq/nodejs-wol:latest
+    image: ghcr.io/hixbehq/wol:latest
     # Uncomment to build locally instead:
     # build: .
     ports:

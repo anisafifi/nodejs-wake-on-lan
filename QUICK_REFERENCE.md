@@ -5,7 +5,7 @@
 ### Pull and Start Application
 ```bash
 # Pull latest from GitHub Container Registry
-docker pull ghcr.io/hixbehq/nodejs-wol:latest
+docker pull ghcr.io/hixbehq/wol:latest
 
 # Start with docker-compose
 docker-compose up -d
@@ -236,8 +236,8 @@ docker inspect wol-app
 
 ### Pull Image
 ```bash
-docker pull ghcr.io/hixbehq/nodejs-wol:latest
-docker pull ghcr.io/hixbehq/nodejs-wol:v1.0.0
+docker pull ghcr.io/hixbehq/wol:latest
+docker pull ghcr.io/hixbehq/wol:v1.0.0
 ```
 
 ### Available Tags

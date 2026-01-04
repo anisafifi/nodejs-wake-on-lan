@@ -21,7 +21,7 @@ A full-stack Wake-on-LAN (WOL) application with CLI, REST API, and web interface
 #### Using Pre-built Image from GitHub Container Registry
 
 ```bash
-docker pull ghcr.io/hixbehq/nodejs-wol:latest
+docker pull ghcr.io/hixbehq/wol:latest
 docker-compose up -d
 ```
 

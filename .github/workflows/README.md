@@ -15,7 +15,7 @@ Automatically builds and publishes Docker images to GitHub Container Registry.
 - ✅ Manual trigger → Via GitHub Actions UI
 
 **Outputs:**
-- Docker images pushed to `ghcr.io/hixbehq/nodejs-wol`
+- Docker images pushed to `ghcr.io/hixbehq/wol`
 - Multiple tags: `latest`, `main`, `v1.0.0`, `v1.0`, `v1`, `main-<sha>`
 - Build provenance attestations
 
@@ -62,7 +62,7 @@ No additional secrets required. The workflow uses the automatic `GITHUB_TOKEN` p
    git merge feature-branch
    git push origin main
    ```
-   → Publishes `ghcr.io/hixbehq/nodejs-wol:latest`
+   → Publishes `ghcr.io/hixbehq/wol:latest`
 
 2. **Create version tag:**
    ```bash
@@ -163,7 +163,7 @@ Add a security scan step:
 - name: Run Trivy scanner
   uses: aquasecurity/trivy-action@master
   with:
-    image-ref: ghcr.io/hixbehq/nodejs-wol:latest
+    image-ref: ghcr.io/hixbehq/wol:latest
     format: 'sarif'
     output: 'trivy-results.sarif'
 ```

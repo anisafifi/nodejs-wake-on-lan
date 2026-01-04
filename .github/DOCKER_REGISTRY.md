@@ -9,7 +9,7 @@ The project uses GitHub Actions to automatically build and publish Docker images
 ## Registry URL
 
 ```
-ghcr.io/hixbehq/nodejs-wol
+ghcr.io/hixbehq/wol
 ```
 
 ## Image Tags
@@ -27,17 +27,17 @@ The workflow automatically creates multiple tags for each build:
 
 ### Pull Latest Version
 ```bash
-docker pull ghcr.io/hixbehq/nodejs-wol:latest
+docker pull ghcr.io/hixbehq/wol:latest
 ```
 
 ### Pull Specific Version
 ```bash
-docker pull ghcr.io/hixbehq/nodejs-wol:v1.0.0
+docker pull ghcr.io/hixbehq/wol:v1.0.0
 ```
 
 ### Pull by Commit SHA
 ```bash
-docker pull ghcr.io/hixbehq/nodejs-wol:main-abc1234
+docker pull ghcr.io/hixbehq/wol:main-abc1234
 ```
 
 ## Running from GitHub Registry
@@ -50,7 +50,7 @@ docker run -d \
   -v $(pwd)/devices.json:/app/devices.json \
   -v $(pwd)/logs:/app/logs \
   -e NODE_ENV=production \
-  ghcr.io/hixbehq/nodejs-wol:latest
+  ghcr.io/hixbehq/wol:latest
 ```
 
 ### Using Docker Compose
@@ -62,7 +62,7 @@ version: '3.8'
 
 services:
   wol-app:
-    image: ghcr.io/hixbehq/nodejs-wol:latest
+    image: ghcr.io/hixbehq/wol:latest
     ports:
       - "3000:3000"
     volumes:
@@ -140,7 +140,7 @@ GitHub Actions will automatically:
 
 By default, GitHub Container Registry images are **private**. To make the image public:
 
-1. Go to: https://github.com/users/hixbehq/packages/container/nodejs-wol/settings
+1. Go to: https://github.com/users/hixbehq/packages/container/wol/settings
 2. Scroll to "Danger Zone"
 3. Click "Change visibility"
 4. Select "Public"
@@ -151,7 +151,7 @@ By default, GitHub Container Registry images are **private**. To make the image 
 ### For Public Images
 No authentication required:
 ```bash
-docker pull ghcr.io/hixbehq/nodejs-wol:latest
+docker pull ghcr.io/hixbehq/wol:latest
 ```
 
 ### For Private Images
@@ -169,7 +169,7 @@ echo $GITHUB_TOKEN | docker login ghcr.io -u USERNAME --password-stdin
 
 3. Pull the image:
 ```bash
-docker pull ghcr.io/hixbehq/nodejs-wol:latest
+docker pull ghcr.io/hixbehq/wol:latest
 ```
 
 ## Build Cache
@@ -202,7 +202,7 @@ https://github.com/hixbehq?tab=packages
 ### Check Image Tags
 ```bash
 # List all tags
-gh api /user/packages/container/nodejs-wol/versions
+gh api /user/packages/container/wol/versions
 ```
 
 ## Troubleshooting
@@ -256,7 +256,7 @@ Same as local Docker deployment:
 
 ```bash
 # Pull latest image
-docker pull ghcr.io/hixbehq/nodejs-wol:latest
+docker pull ghcr.io/hixbehq/wol:latest
 
 # Stop existing container
 docker stop wol-app && docker rm wol-app
@@ -270,7 +270,7 @@ docker run -d \
   -v /data/wol/logs:/app/logs \
   -e NODE_ENV=production \
   -e CORS_ORIGIN=https://yourdomain.com \
-  ghcr.io/hixbehq/nodejs-wol:latest
+  ghcr.io/hixbehq/wol:latest
 ```
 
 ## Automated Deployments
@@ -298,7 +298,7 @@ Consider adding security scanning to the workflow:
 - name: Run Trivy vulnerability scanner
   uses: aquasecurity/trivy-action@master
   with:
-    image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+    image-ref: ghcr.io/hixbehq/wol:latest
     format: 'sarif'
     output: 'trivy-results.sarif'
 ```
