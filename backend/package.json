@@ -25,7 +25,9 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@types/cors": "^2.8.19",
     "commander": "^12.1.0",
+    "cors": "^2.8.5",
     "express": "^4.21.2",
     "express-rate-limit": "^8.2.1",
     "swagger-jsdoc": "^6.2.8",

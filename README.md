@@ -1,235 +1,116 @@
-# Node.js Wake-on-LAN Application
+# Wake-on-LAN Application
 
-A modern Wake-on-LAN (WOL) application built with Node.js, TypeScript, and ESM. Supports both CLI and REST API interfaces for waking devices on your network.
+A full-stack Wake-on-LAN application with a modern Next.js frontend and Node.js backend API.
+
+## Project Structure
+
+```
+nodejs-wol/
+├── backend/          # Node.js + Express API server
+│   ├── src/          # TypeScript source code
+│   ├── dist/         # Compiled JavaScript
+│   ├── logs/         # Application logs
+│   └── devices.json  # Device configuration
+└── frontend/         # Next.js 15 web application
+    ├── app/          # Next.js app directory
+    ├── components/   # React components
+    └── lib/          # API client and utilities
+```
 
 ## Features
 
-- ✨ **Dual Interface**: CLI and REST API support
-- 📦 **Modern Stack**: TypeScript, ESM modules, latest packages
-- 🎯 **Single & Multiple**: Wake one device or multiple devices at once
-- 💾 **Device Management**: Store and manage device configurations
-- 🔧 **Flexible**: Support custom broadcast addresses
-- ✅ **Type-Safe**: Full TypeScript support with type definitions
+### Backend API
+- ✨ RESTful API with Swagger documentation
+- 📦 Device configuration management
+- 🎯 Wake single, multiple, or all devices
+- 🔒 Rate limiting and request ID tracking
+- 📝 Winston logging with file output
+- ✅ Full TypeScript support
 
-## Installation
+### Frontend
+- 🎨 Modern UI with Next.js 15 and Tailwind CSS
+- 📱 Responsive design
+- 🌙 Dark mode support
+- ⚡ Real-time device wake status
+- 🔄 CRUD operations for device management
+
+## Quick Start
+
+### Backend Setup
 
 ```bash
+cd backend
 npm install
-```
-
-## Build
-
-```bash
 npm run build
-```
-
-## Usage
-
-### API Server
-
-Start the API server:
-
-```bash
 npm start
 ```
 
-Or in development mode with hot reload:
+Backend will run on http://localhost:3000
+
+### Frontend Setup
 
 ```bash
+cd frontend
+npm install
 npm run dev
 ```
 
-The server will start on `http://localhost:3000` by default. Set the `PORT` environment variable to change it.
+Frontend will run on http://localhost:3001
 
-#### Swagger Documentation
+## Environment Variables
 
-Interactive API documentation is available at `http://localhost:3000/api-docs`
+### Backend
+- `PORT` - Server port (default: 3000)
+- `LOG_LEVEL` - Logging level: error, warn, info, debug (default: info)
 
-#### API Endpoints
+### Frontend
+- `NEXT_PUBLIC_API_URL` - Backend API URL (default: http://localhost:3000)
 
-**Device Management:**
+## Usage
 
-- `GET /api/devices` - List all configured devices
-- `GET /api/devices/:name` - Get device by name
-- `POST /api/devices` - Add new device
-  ```json
-  {
-    "name": "my-computer",
-    "mac": "00:11:22:33:44:55",
-    "ip": "192.168.1.100",
-    "broadcast": "192.168.1.255"
-  }
-  ```
-- `PUT /api/devices/:name` - Update device
-- `DELETE /api/devices/:name` - Remove device
+1. Start the backend API server
+2. Start the frontend development server
+3. Open http://localhost:3001 in your browser
+4. Add your devices using the "Add Device" button
+5. Click "Wake Device" to send magic packets
 
-**Wake Operations:**
+## API Documentation
 
-- `GET /api/wake?device=<name>` - Wake device by name (query param)
-- `GET /api/wake?mac=<address>` - Wake by MAC address (query param)
-- `GET /api/wake?mac=<address>&broadcast=<broadcast>` - Wake with custom broadcast
-- `POST /api/wake/:name` - Wake device by name
-- `POST /api/wake` - Wake device by MAC address
-  ```json
-  {
-    "mac": "00:11:22:33:44:55",
-    "broadcast": "192.168.1.255"
-  }
-  ```
-- `POST /api/wake-all` - Wake all configured devices
-- `POST /api/wake-multiple` - Wake multiple devices
-  ```json
-  {
-    "devices": ["device1", "device2", "device3"]
-  }
-  ```
-
-**Health Check:**
-
-- `GET /health` - Server health status
-
-### CLI
-
-The CLI can be used directly during development or after building:
-
-**Development:**
-```bash
-npm run dev:cli -- <command>
-```
-
-**After build:**
-```bash
-npm run cli -- <command>
-```
-
-Or if installed globally:
-```bash
-wol <command>
-```
-
-#### CLI Commands
-
-**Wake devices:**
-```bash
-# Wake by device name
-wol wake my-computer
-
-# Wake by MAC address
-wol wake 00:11:22:33:44:55
-
-# Wake with custom broadcast
-wol wake my-computer --broadcast 192.168.1.255
-
-# Wake all configured devices
-wol wake-all
-```
-
-**Device management:**
-```bash
-# List all devices
-wol list
-
-# Add new device
-wol add my-computer 00:11:22:33:44:55 --ip 192.168.1.100 --broadcast 192.168.1.255
-
-# Remove device
-wol remove my-computer
-
-# Update device
-wol update my-computer --mac 00:11:22:33:44:66 --ip 192.168.1.101
-```
-
-**Help:**
-```bash
-# Show all commands
-wol --help
-
-# Show command-specific help
-wol wake --help
-```
-
-## Configuration
-
-Devices are stored in `devices.json` in the project root. The file is automatically created with an example device on first run.
-
-Example `devices.json`:
-```json
-[
-  {
-    "name": "my-computer",
-    "mac": "00:11:22:33:44:55",
-    "ip": "192.168.1.100",
-    "broadcast": "192.168.1.255"
-  },
-  {
-    "name": "media-server",
-    "mac": "AA:BB:CC:DD:EE:FF",
-    "ip": "192.168.1.200"
-  }
-]
-```
-
-## Requirements
-
-- Node.js 18 or higher
-- Network devices with Wake-on-LAN enabled in BIOS/UEFI
-- Devices must be on the same network or reachable via broadcast
-
-## API Examples
-
-**Using curl:**
-
-```bash
-# Wake by device name (GET)
-curl "http://localhost:3000/api/wake?device=my-computer"
-
-# Wake by MAC address (GET)
-curl "http://localhost:3000/api/wake?mac=00:11:22:33:44:55"
-
-# Wake with custom broadcast (GET)
-curl "http://localhost:3000/api/wake?mac=00:11:22:33:44:55&broadcast=192.168.1.255"
-
-# Wake a device (POST)
-curl -X POST http://localhost:3000/api/wake/my-computer
-
-# Add a device
-curl -X POST http://localhost:3000/api/devices \
-  -H "Content-Type: application/json" \
-  -d '{"name":"server","mac":"00:11:22:33:44:55","ip":"192.168.1.50"}'
-
-# Wake all devices
-curl -X POST http://localhost:3000/api/wake-all
-
-# List devices
-curl http://localhost:3000/api/devices
-```
+Interactive Swagger documentation available at: http://localhost:3000/api-docs
 
 ## Development
 
+### Backend Development
 ```bash
-# Install dependencies
-npm install
-
-# Run API server in dev mode
-npm run dev
-
-# Run CLI in dev mode
-npm run dev:cli -- list
-
-# Type check without building
-npm run type-check
-
-# Build for production
-npm run build
+cd backend
+npm run dev  # Hot reload with tsx
 ```
 
-## Technologies
+### Frontend Development
+```bash
+cd frontend
+npm run dev  # Next.js dev server
+```
 
-- **TypeScript 5.7** - Type safety and modern JavaScript features
-- **Express 4.21** - REST API framework
-- **Commander 12.1** - CLI framework
-- **wake_on_lan 1.0** - Wake-on-LAN magic packet implementation
-- **tsx** - TypeScript execution for development
+## Production Deployment
+
+### Backend
+```bash
+cd backend
+npm run build
+npm start
+```
+
+### Frontend
+```bash
+cd frontend
+npm run build
+npm start
+```
+
+## Network Requirements
+
+⚠️ **Important**: This application must run on the same network as the devices you want to wake, or have VPN access to that network. Wake-on-LAN uses broadcast packets that don't traverse the internet.
 
 ## License
 

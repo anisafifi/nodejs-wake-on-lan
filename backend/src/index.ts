@@ -1,7 +1,7 @@
 import { app } from './api.js';
 import { logger } from './logger.js';
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
   logger.info(`Wake-on-LAN API server started on http://localhost:${PORT}`);

@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import rateLimit from 'express-rate-limit';
+import cors from 'cors';
 import { DeviceManager } from './device-manager.js';
 import { WakeOnLanService } from './wol-service.js';
 import { swaggerSpec } from './swagger.js';
@@ -23,6 +24,10 @@ const limiter = rateLimit({
 
 // Middleware
 app.disable('x-powered-by');
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || '*',
+  credentials: true,
+}));
 app.use(requestIdMiddleware);
 app.use(loggingMiddleware);
 app.use(limiter);
