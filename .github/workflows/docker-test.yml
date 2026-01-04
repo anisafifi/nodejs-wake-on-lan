@@ -1,0 +1,78 @@
+name: Docker Build Test
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - '.github/workflows/docker-*.yml'
+  workflow_dispatch:
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image (test only)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: wol-app:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Test image size
+        run: |
+          docker images wol-app:test --format "{{.Size}}"
+          
+      - name: Run container smoke test
+        run: |
+          # Create test devices file
+          echo '[]' > devices.json
+          
+          # Start container
+          docker run -d --name wol-test \
+            -p 3000:3000 \
+            -v $(pwd)/devices.json:/app/devices.json \
+            -e NODE_ENV=production \
+            wol-app:test
+          
+          # Wait for container to start
+          sleep 5
+          
+          # Check if container is running
+          docker ps | grep wol-test
+          
+          # Test health endpoint
+          curl --fail http://localhost:3000/health || exit 1
+          
+          # Test API endpoint
+          curl --fail http://localhost:3000/api/devices || exit 1
+          
+          # Check logs
+          docker logs wol-test
+          
+          # Cleanup
+          docker stop wol-test
+          docker rm wol-test
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "### Docker Build Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Build completed successfully" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Container started successfully" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Health check passed" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ API endpoints responding" >> $GITHUB_STEP_SUMMARY

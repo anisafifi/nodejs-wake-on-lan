@@ -698,9 +698,28 @@ app.post('/api/wake-multiple', async (req: Request, res: Response) => {
   }
 });
 
-// 404 handler
-app.use((_req: Request, res: Response) => {
-  res.status(404).json({ error: 'Endpoint not found' });
-});
+// Serve frontend static files in production
+if (process.env.NODE_ENV === 'production') {
+  const frontendPath = path.join(__dirname, '..', 'frontend-build');
+  
+  // Serve static files
+  app.use(express.static(frontendPath));
+  
+  // Serve index.html for all non-API routes
+  app.get('*', (req: Request, res: Response) => {
+    // Skip API routes - return 404 for unknown API endpoints
+    if (req.path.startsWith('/api/')) {
+      res.status(404).json({ error: 'Endpoint not found' });
+      return;
+    }
+    // Serve Next.js app for all other routes
+    res.sendFile(path.join(frontendPath, 'index.html'));
+  });
+} else {
+  // 404 handler for development (API only)
+  app.use((_req: Request, res: Response) => {
+    res.status(404).json({ error: 'Endpoint not found' });
+  });
+}
 
 export { app, deviceManager, wolService };

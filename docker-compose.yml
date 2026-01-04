@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  wol-app:
+    image: ghcr.io/hixbehq/nodejs-wol:latest
+    # Uncomment to build locally instead:
+    # build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./devices.json:/app/devices.json
+      - ./logs:/app/logs
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - CORS_ORIGIN=*
+    network_mode: host
+    restart: unless-stopped

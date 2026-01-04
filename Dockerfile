@@ -30,12 +30,10 @@ COPY backend/package*.json ./
 RUN npm ci --omit=dev
 
 COPY --from=backend-builder /app/backend/dist ./dist
-COPY --from=backend-builder /app/backend/devices.example.json ./devices.example.json
+COPY backend/devices.example.json ./devices.example.json
 
-# Copy frontend build
-COPY --from=frontend-builder /app/frontend/.next/standalone ./frontend-standalone
-COPY --from=frontend-builder /app/frontend/.next/static ./frontend-standalone/.next/static
-COPY --from=frontend-builder /app/frontend/public ./frontend-standalone/public
+# Copy frontend static build
+COPY --from=frontend-builder /app/frontend/out ./frontend-build
 
 # Copy startup script
 COPY docker-start.sh ./
