@@ -1,156 +1,104 @@
-# Docker Deployment Guide
+# Docker Setup for nodejs-wol
 
-This guide explains how to build and run the Wake-on-LAN application as a Docker container with a single exposed port.
+This application is fully dockerized with both backend and frontend services.
+
+## Prerequisites
+
+- Docker
+- Docker Compose
 
 ## Quick Start
 
-### Using Pre-built Image (Recommended)
+1. **Build and start all services:**
+   ```bash
+   docker-compose up -d
+   ```
 
+2. **Access the application:**
+   - Frontend: http://localhost:3002
+   - Backend API: http://localhost:3001
+   - API Documentation: http://localhost:3001/api-docs
+
+## Docker Commands
+
+### Build and Start
 ```bash
-# Pull from GitHub Container Registry and start
-docker pull ghcr.io/hixbehq/wol:latest
+# Build and start all services
 docker-compose up -d
+
+# Build with no cache
+docker-compose build --no-cache
 
 # View logs
 docker-compose logs -f
 
-# Stop the container
-docker-compose down
+# View logs for specific service
+docker-compose logs -f backend
+docker-compose logs -f frontend
 ```
 
-The application will be available at `http://localhost:3000`
-
-### Building Locally
-
+### Stop and Remove
 ```bash
-# Build the image
-docker build -t wol-app .
+# Stop all services
+docker-compose stop
 
-# Run the container
-docker run -d \
-  --name wol-app \
-  --network host \
-  -v $(pwd)/devices.json:/app/devices.json \
-  -v $(pwd)/logs:/app/logs \
-  -e NODE_ENV=production \
-  -e PORT=3000 \
-  wol-app
+# Stop and remove containers
+docker-compose down
 
-# View logs
-docker logs -f wol-app
-
-# Stop and remove the container
-docker stop wol-app && docker rm wol-app
+# Remove containers and volumes
+docker-compose down -v
 ```
 
-## Architecture
+### Rebuild
+```bash
+# Rebuild and restart services
+docker-compose up -d --build
+```
 
-The Docker setup uses a multi-stage build process:
+## Important Notes
 
-1. **Frontend Build Stage**: Builds Next.js frontend as static files (output: 'export')
-2. **Backend Build Stage**: Compiles TypeScript backend to JavaScript
-3. **Production Stage**: Combines both builds into a single lightweight image
+### Wake-on-LAN Network Requirements
 
-## How It Works
+The backend service uses `network_mode: host` to enable Wake-on-LAN functionality. This is necessary because WoL requires sending magic packets to the local network, which doesn't work properly with Docker's bridge networking.
 
-- The backend Express server (port 3000) serves:
-  - API endpoints at `/api/*`
-  - API documentation at `/api-docs`
-  - Frontend static files for all other routes
-- Only port 3000 is exposed from the container
-- `network_mode: host` is used to enable Wake-on-LAN functionality
+**Implications:**
+- The backend container shares the host's network stack
+- Port mapping is ignored when using host networking
+- The backend will bind directly to port 3001 on the host
+
+### Persistent Data
+
+The following directories are mounted as volumes:
+- `./backend/devices.json` - Device configuration
+- `./backend/logs` - Application logs
 
 ## Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `NODE_ENV` | `production` | Node environment |
-| `PORT` | `3000` | Server port |
-| `CORS_ORIGIN` | `*` | CORS allowed origins |
+You can customize the following environment variables in `docker-compose.yml`:
 
-## Volumes
+**Backend:**
+- `NODE_ENV` - Set to production by default
+- `PORT` - Backend port (default: 3001)
 
-The docker-compose setup mounts two volumes:
+**Frontend:**
+- `NODE_ENV` - Set to production by default
+- `NEXT_PUBLIC_API_URL` - Backend API URL (default: http://localhost:3001)
 
-- `./devices.json` - Device configuration (persists across restarts)
-- `./logs` - Application logs
+## Development
 
-## Network Mode
+For development purposes, you might want to use volume mounts for live reloading:
 
-The container uses `network_mode: host` which is required for Wake-on-LAN to function properly. This allows the container to:
-- Send magic packets to the broadcast address
-- Access the network interfaces of the host machine
-
-**Note**: On Windows and macOS, Docker Desktop doesn't fully support `host` network mode. For these platforms, consider running the application directly on the host or use bridge mode with port mapping (WOL may have limited functionality).
-
-## Building for Production
-
-### Optimize Image Size
-
-The production image is based on `node:20-alpine` for minimal size. Current image size is approximately ~200MB.
-
-### Security Considerations
-
-1. The container runs as the default node user (non-root)
-2. Only necessary files are copied to the production stage
-3. Development dependencies are excluded (`npm ci --omit=dev`)
-4. Sensitive files are excluded via `.dockerignore`
+```yaml
+# Add to backend service in docker-compose.yml
+volumes:
+  - ./backend/src:/app/src
+  - ./backend/devices.json:/app/devices.json
+  - ./backend/logs:/app/logs
+```
 
 ## Troubleshooting
 
-### WOL Not Working
-
-- Ensure `network_mode: host` is set
-- Verify target devices are on the same network
-- Check that target devices have WOL enabled in BIOS/UEFI
-- Ensure the network adapter supports WOL
-
-### Cannot Access Application
-
-- Check if port 3000 is already in use: `netstat -an | findstr :3000`
-- Verify the container is running: `docker ps`
-- Check logs for errors: `docker logs wol-app`
-
-### Frontend Not Loading
-
-- Verify the frontend was built correctly in the Docker image
-- Check that `NODE_ENV=production` is set
-- Ensure static files are in `/app/frontend-build`
-
-## Development vs Production
-
-### Development (Local)
-
-```bash
-# Backend (terminal 1)
-cd backend
-npm run dev
-
-# Frontend (terminal 2)
-cd frontend
-npm run dev
-```
-
-- Backend: http://localhost:3000
-- Frontend: http://localhost:3001
-
-### Production (Docker)
-
-Single container serving both backend and frontend on port 3000.
-
-## Updating the Application
-
-```bash
-# Pull latest changes
-git pull
-
-# Rebuild and restart
-docker-compose down
-docker-compose build --no-cache
-docker-compose up -d
-```
-
-## API Documentation
-
-Once the container is running, access the Swagger documentation at:
-`http://localhost:3000/api-docs`
+1. **Port conflicts:** Ensure ports 3001 and 3002 are not in use
+2. **Wake-on-LAN not working:** Verify the backend is using `network_mode: host`
+3. **Rebuild after changes:** Run `docker-compose up -d --build` after modifying Dockerfiles
+4. **Check logs:** Use `docker-compose logs -f` to view real-time logs
