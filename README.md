@@ -26,7 +26,7 @@ WakeSprint wakes devices on your local network via a REST API, a CLI, and a web 
 - Docker + Docker Compose (optional, for containers)
 - A LAN that allows broadcast magic packets
 
-## Quick Start (Docker)
+## Quick Start (Docker Compose)
 
 ```bash
 docker-compose up -d
@@ -37,6 +37,32 @@ docker-compose up -d
 - Swagger: http://localhost:3001/api-docs
 
 Note: The backend runs with `network_mode: host` so it can send WoL packets on the local network. Port mapping is ignored when host networking is enabled.
+
+## Prebuilt Docker Images (GHCR)
+
+Images are published to GitHub Container Registry.
+
+```bash
+docker pull ghcr.io/<owner>/<repo>-backend:latest
+docker pull ghcr.io/<owner>/<repo>-frontend:latest
+```
+
+Replace `<owner>/<repo>` with your GitHub repository. For this repo:
+
+```bash
+docker pull ghcr.io/anisafifi/wakesprint-backend:latest
+docker pull ghcr.io/anisafifi/wakesprint-frontend:latest
+```
+
+To use the images with Compose, set `image` and remove `build`:
+
+```yaml
+services:
+  backend:
+    image: ghcr.io/anisafifi/wakesprint-backend:latest
+  frontend:
+    image: ghcr.io/anisafifi/wakesprint-frontend:latest
+```
 
 ## Local Development
 
