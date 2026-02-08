@@ -4,8 +4,8 @@ import { logger } from './logger.js';
 const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
-  logger.info(`Wake-on-LAN API server started on http://localhost:${PORT}`);
-  console.log(`🚀 Wake-on-LAN API server running on http://localhost:${PORT}`);
+  logger.info(`WakeSprint API server started on http://localhost:${PORT}`);
+  console.log(`🚀 WakeSprint API server running on http://localhost:${PORT}`);
   console.log(`📋 API Endpoints:`);
   console.log(`   GET    /health`);
   console.log(`   GET    /api/devices`);

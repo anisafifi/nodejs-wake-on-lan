@@ -13,7 +13,7 @@ await deviceManager.loadDevices();
 
 program
   .name('wol')
-  .description('Wake-on-LAN CLI tool')
+  .description('WakeSprint CLI tool')
   .version('1.0.0');
 
 // Wake command

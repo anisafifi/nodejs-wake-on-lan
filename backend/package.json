@@ -1,7 +1,7 @@
 {
-  "name": "nodejs-wol",
+  "name": "wakesprint-backend",
   "version": "1.0.0",
-  "description": "Wake-on-LAN application with CLI and API support",
+  "description": "WakeSprint Wake-on-LAN backend with CLI and API support",
   "type": "module",
   "main": "dist/index.js",
   "bin": {

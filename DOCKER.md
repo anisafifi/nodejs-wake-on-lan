@@ -1,4 +1,4 @@
-# Docker Setup for nodejs-wol
+# Docker Setup for WakeSprint
 
 This application is fully dockerized with both backend and frontend services.
 

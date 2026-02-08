@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Wake-on-LAN Controller",
-  description: "Wake devices on your network with magic packets",
+  title: "WakeSprint",
+  description: "Wake devices on your network with Wake-on-LAN magic packets",
 };
 
 export default function RootLayout({

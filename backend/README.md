@@ -1,6 +1,6 @@
-# Wake-on-LAN Backend API
+# WakeSprint Backend API
 
-RESTful API server for Wake-on-LAN operations built with Node.js, TypeScript, and Express.
+RESTful API server for WakeSprint (Wake-on-LAN) operations built with Node.js, TypeScript, and Express.
 
 ## Features
 

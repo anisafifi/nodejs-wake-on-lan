@@ -4,9 +4,9 @@ const options: swaggerJsdoc.Options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Wake-on-LAN API',
+      title: 'WakeSprint API',
       version: '1.0.0',
-      description: 'A REST API for managing and waking devices using Wake-on-LAN protocol',
+      description: 'A REST API for managing and waking devices using the Wake-on-LAN protocol',
       license: {
         name: 'MIT',
       },
