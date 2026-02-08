@@ -69,7 +69,7 @@ The backend service uses `network_mode: host` to enable Wake-on-LAN functionalit
 ### Persistent Data
 
 The following directories are mounted as volumes:
-- `./backend/devices.json` - Device configuration
+- `./backend/data` - SQLite device database
 - `./backend/logs` - Application logs
 
 ## Environment Variables
@@ -92,7 +92,7 @@ For development purposes, you might want to use volume mounts for live reloading
 # Add to backend service in docker-compose.yml
 volumes:
   - ./backend/src:/app/src
-  - ./backend/devices.json:/app/devices.json
+   - ./backend/data:/app/data
   - ./backend/logs:/app/logs
 ```
 

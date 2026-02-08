@@ -16,7 +16,7 @@ WakeSprint wakes devices on your local network via a REST API, a CLI, and a web 
 
 ## Architecture
 
-- Backend: Express + TypeScript, stores devices in `backend/devices.json`
+- Backend: Express + TypeScript, stores devices in a SQLite database at `backend/data/database.db`
 - Frontend: Next.js App Router, talks to the backend API
 - Docker: backend uses host networking to send WoL packets
 
@@ -64,7 +64,8 @@ npm run dev
 
 ## Configuration
 
-Devices are stored in `backend/devices.json`. If the file is missing, a sample is created on first run.
+Devices are stored in `backend/data/database.db`. On first run, the backend will migrate data from
+`backend/devices.json` if it exists, or seed a sample device.
 
 Example:
 
@@ -127,6 +128,7 @@ Backend:
 - `PORT` (default: 3001)
 - `LOG_LEVEL` (default: info)
 - `CORS_ORIGIN` (default: `*`)
+- `DEVICES_DB_PATH` (default: `backend/data/database.db`)
 
 Frontend:
 
@@ -143,7 +145,7 @@ Backend logs are written to:
 
 - WoL fails in Docker: ensure host networking is enabled and broadcast is allowed on your LAN
 - Port conflicts: make sure 3001 and 3002 are free
-- Device not found: check `devices.json` and use exact device name
+- Device not found: check the SQLite database and use exact device name
 
 ## License
 

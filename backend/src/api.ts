@@ -41,8 +41,9 @@ app.use(express.json());
 // Initialize device manager
 await deviceManager.loadDevices();
 
+const initialDevices = await deviceManager.getDevices();
 logger.info('Device manager initialized', { 
-  deviceCount: deviceManager.getDevices().length 
+  deviceCount: initialDevices.length 
 });
 
 // Swagger documentation
@@ -98,8 +99,8 @@ app.get('/health', (_req: Request, res: Response) => {
  *                 count:
  *                   type: integer
  */
-app.get('/api/devices', (_req: Request, res: Response) => {
-  const devices = deviceManager.getDevices();
+app.get('/api/devices', async (_req: Request, res: Response) => {
+  const devices = await deviceManager.getDevices();
   res.json({ devices, count: devices.length });
 });
 
@@ -130,8 +131,8 @@ app.get('/api/devices', (_req: Request, res: Response) => {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-app.get('/api/devices/:name', (req: Request, res: Response) => {
-  const device = deviceManager.getDevice(req.params.name);
+app.get('/api/devices/:name', async (req: Request, res: Response) => {
+  const device = await deviceManager.getDevice(req.params.name);
   if (!device) {
     res.status(404).json({ error: 'Device not found' });
     return;
@@ -358,7 +359,7 @@ app.get('/api/wake', async (req: Request, res: Response) => {
 
     // Wake by device name
     if (device && typeof device === 'string') {
-      const deviceConfig = deviceManager.getDevice(device);
+      const deviceConfig = await deviceManager.getDevice(device);
       if (!deviceConfig) {
         res.status(404).json({ error: 'Device not found' });
         return;
@@ -433,7 +434,7 @@ app.get('/api/wake', async (req: Request, res: Response) => {
  */
 app.post('/api/wake/:name', async (req: Request, res: Response) => {
   try {
-    const device = deviceManager.getDevice(req.params.name);
+    const device = await deviceManager.getDevice(req.params.name);
     if (!device) {
       res.status(404).json({ error: 'Device not found' });
       return;
@@ -558,7 +559,7 @@ app.post('/api/wake', async (req: Request, res: Response) => {
  */
 app.post('/api/wake-all', async (_req: Request, res: Response) => {
   try {
-    const devices = deviceManager.getDevices();
+    const devices = await deviceManager.getDevices();
     if (devices.length === 0) {
       res.status(404).json({ error: 'No devices configured' });
       return;
@@ -664,7 +665,7 @@ app.post('/api/wake-multiple', async (req: Request, res: Response) => {
     const notFound: string[] = [];
 
     for (const name of deviceNames) {
-      const device = deviceManager.getDevice(name);
+      const device = await deviceManager.getDevice(name);
       if (device) {
         devices.push(device);
       } else {

@@ -28,7 +28,6 @@ RUN npm ci --only=production
 
 # Copy built application from builder stage
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/devices.json ./devices.json
 
 # Expose the API port
 EXPOSE 3001

@@ -47,10 +47,12 @@ Interactive Swagger documentation is available at `http://localhost:3000/api-doc
 
 - `PORT` - Server port (default: 3000)
 - `LOG_LEVEL` - Logging level: error, warn, info, debug (default: info)
+- `DEVICES_DB_PATH` - Path to the SQLite database file (default: `./data/database.db`)
 
 ## Configuration
 
-Devices are stored in `devices.json`. See `devices.example.json` for the format.
+Devices are stored in a SQLite database. On first run, the service will migrate data from
+`devices.json` if it exists, or seed the database with the example device.
 
 ## Logs
 

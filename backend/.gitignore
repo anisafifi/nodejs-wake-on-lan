@@ -3,6 +3,6 @@ dist/
 logs/
 *.log
 .env
-devices.json
+data/*.db
 .DS_Store
 *.tgz

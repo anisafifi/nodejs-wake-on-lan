@@ -12,7 +12,7 @@ services:
       - NODE_ENV=production
       - PORT=3001
     volumes:
-      - ./backend/devices.json:/app/devices.json
+      - ./backend/data:/app/data
       - ./backend/logs:/app/logs
     restart: unless-stopped
     networks:

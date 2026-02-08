@@ -5,13 +5,13 @@ dist
 .gitignore
 *.md
 logs
-devices.json
+data/*.db
 .env
 .env.local
 backend/node_modules
 backend/dist
 backend/logs
-backend/devices.json
+backend/data/*.db
 frontend/node_modules
 frontend/.next
 frontend/.env.local

@@ -33,7 +33,7 @@ program
           process.exit(1);
         }
       } else {
-        const device = deviceManager.getDevice(deviceInput);
+        const device = await deviceManager.getDevice(deviceInput);
         if (!device) {
           console.error(`Device '${deviceInput}' not found`);
           process.exit(1);
@@ -58,7 +58,7 @@ program
   .description('Wake all configured devices')
   .action(async () => {
     try {
-      const devices = deviceManager.getDevices();
+      const devices = await deviceManager.getDevices();
       if (devices.length === 0) {
         console.log('No devices configured');
         return;
@@ -84,8 +84,8 @@ program
 program
   .command('list')
   .description('List all configured devices')
-  .action(() => {
-    const devices = deviceManager.getDevices();
+  .action(async () => {
+    const devices = await deviceManager.getDevices();
     if (devices.length === 0) {
       console.log('No devices configured');
       return;
