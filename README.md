@@ -2,6 +2,8 @@
 
 Wake devices on your local network via a REST API, a CLI, and a web UI. The backend is a TypeScript Express server that manages device configs and sends WoL magic packets. The frontend is a Next.js dashboard for device management and wake actions.
 
+![Screenshot](./screenshot.png)
+
 ## Features
 
 - REST API with Swagger docs
